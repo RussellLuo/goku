@@ -161,7 +161,7 @@ func (c *Cluster) Name() string { return c.name }
 // Slots returns the slots with the given slot ids. If no id is given,
 // it will return all slots in the cluster.
 //
-// The slots are returned as a map, callers must not to modify the map.
+// The slots are returned as a map, callers must not modify the map.
 func (c *Cluster) Slots(ids ...int) map[int]*Slot {
 	if len(ids) == 0 {
 		return c.slots
@@ -177,7 +177,7 @@ func (c *Cluster) Slots(ids ...int) map[int]*Slot {
 // Groups returns the groups with the given group ids. If no id is given,
 // it will return all existing groups in the cluster.
 //
-// The groups are returned as a map, callers must not to modify the map.
+// The groups are returned as a map, callers must not modify the map.
 func (c *Cluster) Groups(ids ...int) map[int]Group {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
@@ -342,8 +342,9 @@ func (c *Cluster) getSlotID(key string) int {
 	return int(crc32.ChecksumIEEE([]byte(key)) % SlotNum)
 }
 
-// GetGroupByKey finds the group which manages the slot the key belongs to.
-func (c *Cluster) GetGroupByKey(key string) (Group, error) {
+// MapToGroup maps the given key to a group, which manages the slot
+// to which the key belongs.
+func (c *Cluster) MapToGroup(key string) (Group, error) {
 	slotID := c.getSlotID(key)
 	slot := c.slots[slotID]
 

@@ -181,7 +181,7 @@ func TestCluster_MigrateSlots(t *testing.T) {
 	validate(c2.Slots())
 }
 
-func TestCluster_GetGroupByKey(t *testing.T) {
+func TestCluster_MapToGroup(t *testing.T) {
 	clusters, cleanup := newAndOpenClusters(t, 2)
 	defer cleanup()
 	c1 := clusters[0]
@@ -195,7 +195,7 @@ func TestCluster_GetGroupByKey(t *testing.T) {
 	time.Sleep(500 * time.Millisecond)
 
 	validate := func(c *cluster.Cluster, key string, want int) {
-		g, err := c.GetGroupByKey(key)
+		g, err := c.MapToGroup(key)
 		if err != nil {
 			t.Error(err)
 		}
