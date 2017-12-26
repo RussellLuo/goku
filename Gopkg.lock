@@ -10,8 +10,8 @@
 [[projects]]
   name = "github.com/boltdb/bolt"
   packages = ["."]
-  revision = "aa66506030b376f848667d84d2596faa8a7099ea"
-  version = "v1.0"
+  revision = "2f1ce7a837dcb8da3ec595b1dac9d0632f0f99e8"
+  version = "v1.3.1"
 
 [[projects]]
   branch = "master"
@@ -42,6 +42,12 @@
   name = "github.com/hashicorp/raft-boltdb"
   packages = ["."]
   revision = "6e5ba93211eaf8d9a2ad7e41ffad8c6f160f9fe3"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  revision = "83801418e1b59fb1880e363299581ee543af32ca"
 
 [solve-meta]
   analyzer-name = "dep"
