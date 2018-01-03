@@ -181,7 +181,7 @@ func TestCluster_MigrateSlots(t *testing.T) {
 	validate(c2.Slots())
 }
 
-func TestCluster_MapToGroup(t *testing.T) {
+func TestCluster_MapToSlot(t *testing.T) {
 	clusters, cleanup := newAndOpenClusters(t, 2)
 	defer cleanup()
 	c1 := clusters[0]
@@ -194,17 +194,21 @@ func TestCluster_MapToGroup(t *testing.T) {
 	// Wait for committed log entry to be applied.
 	time.Sleep(500 * time.Millisecond)
 
-	validate := func(c *cluster.Cluster, key string, want int) {
-		g, err := c.MapToGroup(key)
+	validate := func(c *cluster.Cluster, key string, wantGroupID, wantSlotID int) {
+		slot, err := c.MapToSlot(key)
 		if err != nil {
 			t.Error(err)
 		}
-		if g.ID() != want {
-			t.Errorf("key '%s' belongs to group %d (want: %d)", key, g.ID(), want)
+		g := slot.Group()
+		if g.ID() != wantGroupID {
+			t.Errorf("key '%s' does not belong to group %d (got: %d)", key, wantGroupID, g.ID())
+		}
+		if slot.ID != wantSlotID {
+			t.Errorf("key '%s' does not belong to slot %d (got: %d)", key, wantSlotID, slot.ID)
 		}
 	}
-	validate(c1, "foo", 1)
-	validate(c2, "foo", 1)
-	validate(c1, "barx", 2)
-	validate(c2, "barx", 2)
+	validate(c1, "foo", 1, 289)
+	validate(c2, "foo", 1, 289)
+	validate(c1, "barx", 2, 1017)
+	validate(c2, "barx", 2, 1017)
 }

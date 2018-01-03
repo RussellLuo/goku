@@ -338,13 +338,13 @@ func (c *Cluster) MigrateSlots(toGroupID, startSlotID, stopSlotID int) (err erro
 	return nil
 }
 
+// getSlotID returns the slot id to which the given key belongs.
 func (c *Cluster) getSlotID(key string) int {
 	return int(crc32.ChecksumIEEE([]byte(key)) % SlotNum)
 }
 
-// MapToGroup maps the given key to a group, which manages the slot
-// to which the key belongs.
-func (c *Cluster) MapToGroup(key string) (Group, error) {
+// MapToSlot maps the given key to a slot, to which the key belongs.
+func (c *Cluster) MapToSlot(key string) (*Slot, error) {
 	slotID := c.getSlotID(key)
 	slot := c.slots[slotID]
 
@@ -362,5 +362,5 @@ func (c *Cluster) MapToGroup(key string) (Group, error) {
 		}
 	}
 
-	return g, nil
+	return slot, nil
 }
