@@ -1,0 +1,56 @@
+syntax = "proto3";
+package pb;
+option go_package = "pb";
+
+message Error {
+  int64 code = 1;
+  string message = 2;
+}
+
+message Element {
+  string member = 3;
+  int64 timestamp_ns = 4;
+  int64 ttl_ns = 5;
+}
+
+message InsertRequest {
+  int64 slot_id = 1;
+  string key = 2;
+  string member = 3;
+  int64 timestamp_ns = 4;
+  int64 ttl_ns = 5;
+}
+
+message InsertReply {
+  bool updated = 1;
+  Error error = 2;
+}
+
+message DeleteRequest {
+  int64 slot_id = 1;
+  string key = 2;
+  string member = 3;
+  int64 timestamp_ns = 4;
+}
+
+message DeleteReply {
+  bool deleted = 1;
+  Error error = 2;
+}
+
+message SelectRequest {
+  int64 slot_id = 1;
+  string key = 2;
+  int64 timestamp_ns = 3;
+}
+
+message SelectReply {
+  repeated Element elements = 1;
+  Error error = 2;
+}
+
+service GokuServer {
+  rpc Insert(InsertRequest) returns (InsertReply) {}
+  rpc Delete(DeleteRequest) returns (DeleteReply) {}
+  rpc Select(SelectRequest) returns (SelectReply) {}
+}
