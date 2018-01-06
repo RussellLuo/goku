@@ -1,0 +1,84 @@
+syntax = "proto3";
+package pb;
+option go_package = "pb";
+
+message Error {
+  int64 code = 1;
+  string message = 2;
+}
+
+message AddGroupRequest {
+  int64 group_id = 1;
+  repeated string servers = 2;
+}
+
+message AddGroupReply {
+  Error error = 1;
+}
+
+message DelGroupRequest {
+  int64 group_id = 1;
+}
+
+message DelGroupReply {
+  Error error = 1;
+}
+
+message AssignSlotsRequest {
+  int64 to_group_id = 1;
+  int64 start_slot_id = 2;
+  int64 stop_slot_id = 3;
+}
+
+message AssignSlotsReply {
+  Error error = 1;
+}
+
+message InsertRequest {
+  string key = 1;
+  string member = 2;
+  int64 timestamp_ns = 3;
+  int64 ttl_ns = 4;
+}
+
+message InsertReply {
+  bool updated = 1;
+  Error error = 2;
+}
+
+message DeleteRequest {
+  string key = 1;
+  string member = 2;
+  int64 timestamp_ns = 3;
+}
+
+message DeleteReply {
+  bool deleted = 1;
+  Error error = 2;
+}
+
+message SelectRequest {
+  string key = 1;
+  int64 timestamp_ns = 2;
+}
+
+message Element {
+  string member = 3;
+  int64 timestamp_ns = 4;
+  int64 ttl_ns = 5;
+}
+
+message SelectReply {
+  repeated Element elements = 1;
+  Error error = 2;
+}
+
+service GokuProxy {
+  rpc AddGroup(AddGroupRequest) returns (AddGroupReply) {}
+  rpc DelGroup(DelGroupRequest) returns (DelGroupReply) {}
+  rpc AssignSlots(AssignSlotsRequest) returns (AssignSlotsReply) {}
+
+  rpc Insert(InsertRequest) returns (InsertReply) {}
+  rpc Delete(DeleteRequest) returns (DeleteReply) {}
+  rpc Select(SelectRequest) returns (SelectReply) {}
+}
