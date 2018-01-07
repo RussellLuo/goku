@@ -364,8 +364,8 @@ func TestSlot_GetWorkingGroups(t *testing.T) {
 		g, from, err := s.GetWorkingGroups()
 		stop := time.Now()
 		// GetWorkingGroups is considered to be blocked, if it consumes
-		// at least greater than 1ms, which is less than the above sleeping
-		// time but obviously much slower than normal non-blocking execution.
+		// greater than 1ms, which is lower than the above sleeping time but
+		// obviously much greater than normal non-blocking execution time.
 		blocked := stop.Sub(start) > 1*time.Millisecond
 
 		if !reflect.DeepEqual(err, c.want.err) {
