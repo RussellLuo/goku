@@ -8,6 +8,21 @@ import (
 // SlotState captures the state of a slot.
 type SlotState int
 
+func (s SlotState) String() string {
+	switch s {
+	case SlotStateOffline:
+		return "offline"
+	case SlotStateOnline:
+		return "online"
+	case SlotStatePreMigration:
+		return "pre-migration"
+	case SlotStateInMigration:
+		return "in-migration"
+	default:
+		return fmt.Sprintf("state(%d)", s)
+	}
+}
+
 const (
 	SlotStateOffline SlotState = iota
 	SlotStateOnline
@@ -61,7 +76,7 @@ func (s *Slot) MarkOffline() error {
 	defer s.mu.Unlock()
 
 	if s.state != SlotStateOnline {
-		return fmt.Errorf("cannot change state to offline: %v", s)
+		return fmt.Errorf("cannot change %s slot to offline", s.state)
 	}
 
 	s.state = SlotStateOffline
@@ -82,7 +97,7 @@ func (s *Slot) MarkOnline(group Group) error {
 		s.fromGroup = nil
 		return nil
 	default:
-		return fmt.Errorf("cannot change state to online: %v", s)
+		return fmt.Errorf("cannot change %s slot to online", s.state)
 	}
 }
 
@@ -91,7 +106,7 @@ func (s *Slot) MarkPreMigration(group Group) error {
 	defer s.mu.Unlock()
 
 	if s.state != SlotStateOnline {
-		return fmt.Errorf("cannot change state to pre-migration: %v", s)
+		return fmt.Errorf("cannot change %s slot to pre-migration", s.state)
 	}
 
 	s.state = SlotStatePreMigration
@@ -106,7 +121,7 @@ func (s *Slot) MarkInMigration() error {
 	defer s.mu.Unlock()
 
 	if s.state != SlotStatePreMigration {
-		return fmt.Errorf("cannot change state to in-migration: %v", s)
+		return fmt.Errorf("cannot change %s slot to in-migration", s.state)
 	}
 
 	s.state = SlotStateInMigration
@@ -131,7 +146,7 @@ func (s *Slot) GetWorkingGroups() (g, from Group, err error) {
 	case SlotStatePreMigration:
 		// To handle the migration in a highly consistent manner, we
 		// must wait until the state has been changed to in-migration
-		// if it is pre-migration.
+		// if it is pre-migration before.
 		for s.state != SlotStateInMigration {
 			s.co.Wait()
 		}
