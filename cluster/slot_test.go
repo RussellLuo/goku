@@ -63,21 +63,26 @@ func TestSlot_MarkOffline(t *testing.T) {
 		},
 	}
 
-	for i, c := range cases {
-		s := c.in
-		err := s.MarkOffline()
-		if !reflect.DeepEqual(err, c.want.err) {
-			t.Errorf("[case %d] err: got(%+v) != want(%+v)", i, err, c.want.err)
-		}
-		if s.State() != c.want.state {
-			t.Errorf("[case %d] state: got(%+v) != want(%+v)", i, s.State(), c.want.state)
-		}
-		if s.Group() != c.want.group {
-			t.Errorf("[case %d] group: got(%+v) != want(%+v)", i, s.Group(), c.want.group)
-		}
-		if s.FromGroup() != c.want.fromGroup {
-			t.Errorf("[case %d] fromGroup: got(%+v) != want(%+v)", i, s.FromGroup(), c.want.fromGroup)
-		}
+	for _, c := range cases {
+		c := c
+		t.Run(c.in.State().String(), func(t *testing.T) {
+			t.Parallel()
+
+			s := c.in
+			err := s.MarkOffline()
+			if !reflect.DeepEqual(err, c.want.err) {
+				t.Errorf("err: got(%+v) != want(%+v)", err, c.want.err)
+			}
+			if s.State() != c.want.state {
+				t.Errorf("state: got(%+v) != want(%+v)", s.State(), c.want.state)
+			}
+			if s.Group() != c.want.group {
+				t.Errorf("group: got(%+v) != want(%+v)", s.Group(), c.want.group)
+			}
+			if s.FromGroup() != c.want.fromGroup {
+				t.Errorf("fromGroup: got(%+v) != want(%+v)", s.FromGroup(), c.want.fromGroup)
+			}
+		})
 	}
 }
 
@@ -135,21 +140,26 @@ func TestSlot_MarkOnline(t *testing.T) {
 		},
 	}
 
-	for i, c := range cases {
-		s := c.in
-		err := s.MarkOnline(group2)
-		if !reflect.DeepEqual(err, c.want.err) {
-			t.Errorf("[case %d] err: got(%+v) != want(%+v)", i, err, c.want.err)
-		}
-		if s.State() != c.want.state {
-			t.Errorf("[case %d] state: got(%+v) != want(%+v)", i, s.State(), c.want.state)
-		}
-		if s.Group() != c.want.group {
-			t.Errorf("[case %d] group: got(%+v) != want(%+v)", i, s.Group(), c.want.group)
-		}
-		if s.FromGroup() != c.want.fromGroup {
-			t.Errorf("[case %d] fromGroup: got(%+v) != want(%+v)", i, s.FromGroup(), c.want.fromGroup)
-		}
+	for _, c := range cases {
+		c := c
+		t.Run(c.in.State().String(), func(t *testing.T) {
+			t.Parallel()
+
+			s := c.in
+			err := s.MarkOnline(group2)
+			if !reflect.DeepEqual(err, c.want.err) {
+				t.Errorf("err: got(%+v) != want(%+v)", err, c.want.err)
+			}
+			if s.State() != c.want.state {
+				t.Errorf("state: got(%+v) != want(%+v)", s.State(), c.want.state)
+			}
+			if s.Group() != c.want.group {
+				t.Errorf("group: got(%+v) != want(%+v)", s.Group(), c.want.group)
+			}
+			if s.FromGroup() != c.want.fromGroup {
+				t.Errorf("fromGroup: got(%+v) != want(%+v)", s.FromGroup(), c.want.fromGroup)
+			}
+		})
 	}
 }
 
@@ -207,21 +217,26 @@ func TestSlot_MarkPreMigration(t *testing.T) {
 		},
 	}
 
-	for i, c := range cases {
-		s := c.in
-		err := s.MarkPreMigration(group2)
-		if !reflect.DeepEqual(err, c.want.err) {
-			t.Errorf("[case %d] err: got(%+v) != want(%+v)", i, err, c.want.err)
-		}
-		if s.State() != c.want.state {
-			t.Errorf("[case %d] state: got(%+v) != want(%+v)", i, s.State(), c.want.state)
-		}
-		if s.Group() != c.want.group {
-			t.Errorf("[case %d] group: got(%+v) != want(%+v)", i, s.Group(), c.want.group)
-		}
-		if s.FromGroup() != c.want.fromGroup {
-			t.Errorf("[case %d] fromGroup: got(%+v) != want(%+v)", i, s.FromGroup(), c.want.fromGroup)
-		}
+	for _, c := range cases {
+		c := c
+		t.Run(c.in.State().String(), func(t *testing.T) {
+			t.Parallel()
+
+			s := c.in
+			err := s.MarkPreMigration(group2)
+			if !reflect.DeepEqual(err, c.want.err) {
+				t.Errorf("err: got(%+v) != want(%+v)", err, c.want.err)
+			}
+			if s.State() != c.want.state {
+				t.Errorf("state: got(%+v) != want(%+v)", s.State(), c.want.state)
+			}
+			if s.Group() != c.want.group {
+				t.Errorf("group: got(%+v) != want(%+v)", s.Group(), c.want.group)
+			}
+			if s.FromGroup() != c.want.fromGroup {
+				t.Errorf("fromGroup: got(%+v) != want(%+v)", s.FromGroup(), c.want.fromGroup)
+			}
+		})
 	}
 }
 
@@ -279,21 +294,26 @@ func TestSlot_MarkInMigration(t *testing.T) {
 		},
 	}
 
-	for i, c := range cases {
-		s := c.in
-		err := s.MarkInMigration()
-		if !reflect.DeepEqual(err, c.want.err) {
-			t.Errorf("[case %d] err: got(%+v) != want(%+v)", i, err, c.want.err)
-		}
-		if s.State() != c.want.state {
-			t.Errorf("[case %d] state: got(%+v) != want(%+v)", i, s.State(), c.want.state)
-		}
-		if s.Group() != c.want.group {
-			t.Errorf("[case %d] group: got(%+v) != want(%+v)", i, s.Group(), c.want.group)
-		}
-		if s.FromGroup() != c.want.fromGroup {
-			t.Errorf("[case %d] fromGroup: got(%+v) != want(%+v)", i, s.FromGroup(), c.want.fromGroup)
-		}
+	for _, c := range cases {
+		c := c
+		t.Run(c.in.State().String(), func(t *testing.T) {
+			t.Parallel()
+
+			s := c.in
+			err := s.MarkInMigration()
+			if !reflect.DeepEqual(err, c.want.err) {
+				t.Errorf("err: got(%+v) != want(%+v)", err, c.want.err)
+			}
+			if s.State() != c.want.state {
+				t.Errorf("state: got(%+v) != want(%+v)", s.State(), c.want.state)
+			}
+			if s.Group() != c.want.group {
+				t.Errorf("group: got(%+v) != want(%+v)", s.Group(), c.want.group)
+			}
+			if s.FromGroup() != c.want.fromGroup {
+				t.Errorf("fromGroup: got(%+v) != want(%+v)", s.FromGroup(), c.want.fromGroup)
+			}
+		})
 	}
 }
 
@@ -351,34 +371,39 @@ func TestSlot_GetWorkingGroups(t *testing.T) {
 		},
 	}
 
-	for i, c := range cases {
-		s := c.in
+	for _, c := range cases {
+		c := c
+		t.Run(c.in.State().String(), func(t *testing.T) {
+			t.Parallel()
 
-		go func() {
-			// Sleep for 2ms
-			time.Sleep(2 * time.Millisecond)
-			s.MarkInMigration()
-		}()
+			s := c.in
 
-		start := time.Now()
-		g, from, err := s.GetWorkingGroups()
-		stop := time.Now()
-		// GetWorkingGroups is considered to be blocked, if it consumes
-		// greater than 1ms, which is lower than the above sleeping time but
-		// obviously much greater than normal non-blocking execution time.
-		blocked := stop.Sub(start) > 1*time.Millisecond
+			go func() {
+				// Sleep for 2ms
+				time.Sleep(2 * time.Millisecond)
+				s.MarkInMigration()
+			}()
 
-		if !reflect.DeepEqual(err, c.want.err) {
-			t.Errorf("[case %d] err: got(%+v) != want(%+v)", i, err, c.want.err)
-		}
-		if g != c.want.group {
-			t.Errorf("[case %d] group: got(%+v) != want(%+v)", i, g, c.want.group)
-		}
-		if from != c.want.fromGroup {
-			t.Errorf("[case %d] fromGroup: got(%+v) != want(%+v)", i, from, c.want.fromGroup)
-		}
-		if blocked != c.want.blocked {
-			t.Errorf("[case %d] blocked: got(%+v) != want(%+v)", i, blocked, c.want.blocked)
-		}
+			start := time.Now()
+			g, from, err := s.GetWorkingGroups()
+			stop := time.Now()
+			// GetWorkingGroups is considered to be blocked, if it consumes
+			// greater than 1ms, which is lower than the above sleeping time but
+			// obviously much greater than normal non-blocking execution time.
+			blocked := stop.Sub(start) > 1*time.Millisecond
+
+			if !reflect.DeepEqual(err, c.want.err) {
+				t.Errorf("err: got(%+v) != want(%+v)", err, c.want.err)
+			}
+			if g != c.want.group {
+				t.Errorf("group: got(%+v) != want(%+v)", g, c.want.group)
+			}
+			if from != c.want.fromGroup {
+				t.Errorf("fromGroup: got(%+v) != want(%+v)", from, c.want.fromGroup)
+			}
+			if blocked != c.want.blocked {
+				t.Errorf("blocked: got(%+v) != want(%+v)", blocked, c.want.blocked)
+			}
+		})
 	}
 }

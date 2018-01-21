@@ -171,6 +171,8 @@ func TestGroup_Insert(t *testing.T) {
 					&mockServer{
 						addr: "server2",
 						insertFn: func(slotID int, key, member string, timestamp int64, ttl time.Duration) (bool, error) {
+							// Ensure this function returns after the one at server1
+							time.Sleep(1 * time.Microsecond)
 							return false, fmt.Errorf("fail to insert at server2")
 						},
 					},
@@ -184,15 +186,20 @@ func TestGroup_Insert(t *testing.T) {
 		},
 	}
 
-	for i, c := range cases {
-		g := group.NewGroup(groupID, c.in.servers, c.in.writeQuorum, c.in.readStrategy)
-		updated, err := g.Insert(slotID, key, member, ts, ttl)
-		if !reflect.DeepEqual(err, c.want.err) {
-			t.Errorf("[case %d] err: got(%+v) != want(%+v)", i, err, c.want.err)
-		}
-		if updated != c.want.updated {
-			t.Errorf("[case %d] updated: got(%+v) != want(%+v)", i, updated, c.want.updated)
-		}
+	for _, c := range cases {
+		c := c
+		t.Run("", func(t *testing.T) {
+			t.Parallel()
+
+			g := group.NewGroup(groupID, c.in.servers, c.in.writeQuorum, c.in.readStrategy)
+			updated, err := g.Insert(slotID, key, member, ts, ttl)
+			if !reflect.DeepEqual(err, c.want.err) {
+				t.Errorf("err: got(%+v) != want(%+v)", err, c.want.err)
+			}
+			if updated != c.want.updated {
+				t.Errorf("updated: got(%+v) != want(%+v)", updated, c.want.updated)
+			}
+		})
 	}
 }
 
@@ -324,6 +331,8 @@ func TestGroup_Delete(t *testing.T) {
 					&mockServer{
 						addr: "server2",
 						deleteFn: func(slotID int, key, member string, timestamp int64) (bool, error) {
+							// Ensure this function returns after the one at server1
+							time.Sleep(1 * time.Microsecond)
 							return false, fmt.Errorf("fail to delete at server2")
 						},
 					},
@@ -337,15 +346,20 @@ func TestGroup_Delete(t *testing.T) {
 		},
 	}
 
-	for i, c := range cases {
-		g := group.NewGroup(groupID, c.in.servers, c.in.writeQuorum, c.in.readStrategy)
-		deleted, err := g.Delete(slotID, key, member, ts)
-		if !reflect.DeepEqual(err, c.want.err) {
-			t.Errorf("[case %d] err: got(%+v) != want(%+v)", i, err, c.want.err)
-		}
-		if deleted != c.want.deleted {
-			t.Errorf("[case %d] updated: got(%+v) != want(%+v)", i, deleted, c.want.deleted)
-		}
+	for _, c := range cases {
+		c := c
+		t.Run("", func(t *testing.T) {
+			t.Parallel()
+
+			g := group.NewGroup(groupID, c.in.servers, c.in.writeQuorum, c.in.readStrategy)
+			deleted, err := g.Delete(slotID, key, member, ts)
+			if !reflect.DeepEqual(err, c.want.err) {
+				t.Errorf("err: got(%+v) != want(%+v)", err, c.want.err)
+			}
+			if deleted != c.want.deleted {
+				t.Errorf("updated: got(%+v) != want(%+v)", deleted, c.want.deleted)
+			}
+		})
 	}
 }
 
@@ -398,14 +412,19 @@ func TestGroup_Select(t *testing.T) {
 		},
 	}
 
-	for i, c := range cases {
-		g := group.NewGroup(groupID, c.in.servers, c.in.writeQuorum, c.in.readStrategy)
-		elements, err := g.Select(slotID, "key1", ts)
-		if !reflect.DeepEqual(err, c.want.err) {
-			t.Errorf("[case %d] err: got(%+v) != want(%+v)", i, err, c.want.err)
-		}
-		if !reflect.DeepEqual(elements, c.want.elements) {
-			t.Errorf("[case %d] updated: got(%+v) != want(%+v)", i, elements, c.want.elements)
-		}
+	for _, c := range cases {
+		c := c
+		t.Run("", func(t *testing.T) {
+			t.Parallel()
+
+			g := group.NewGroup(groupID, c.in.servers, c.in.writeQuorum, c.in.readStrategy)
+			elements, err := g.Select(slotID, "key1", ts)
+			if !reflect.DeepEqual(err, c.want.err) {
+				t.Errorf("err: got(%+v) != want(%+v)", err, c.want.err)
+			}
+			if !reflect.DeepEqual(elements, c.want.elements) {
+				t.Errorf("updated: got(%+v) != want(%+v)", elements, c.want.elements)
+			}
+		})
 	}
 }

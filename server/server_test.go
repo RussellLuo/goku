@@ -67,14 +67,16 @@ func TestServer_Insert(t *testing.T) {
 		},
 	}
 
-	for i, c := range cases {
-		updated, err := s.Insert(0, c.in.key, c.in.member, c.in.timestamp, c.in.ttl)
-		if !reflect.DeepEqual(updated, c.want.updated) {
-			t.Errorf("[case %d] updated: got(%+v) != want(%+v)", i, updated, c.want.updated)
-		}
-		if !reflect.DeepEqual(err, c.want.err) {
-			t.Errorf("[case %d] err: got(%+v) != want(%+v)", i, err, c.want.err)
-		}
+	for _, c := range cases {
+		t.Run("", func(t *testing.T) {
+			updated, err := s.Insert(0, c.in.key, c.in.member, c.in.timestamp, c.in.ttl)
+			if !reflect.DeepEqual(updated, c.want.updated) {
+				t.Errorf("updated: got(%+v) != want(%+v)", updated, c.want.updated)
+			}
+			if !reflect.DeepEqual(err, c.want.err) {
+				t.Errorf("err: got(%+v) != want(%+v)", err, c.want.err)
+			}
+		})
 	}
 }
 
@@ -136,14 +138,16 @@ func TestServer_Delete(t *testing.T) {
 	s.Insert(0, "key1", "member1", ts, 2*time.Second)
 	s.Insert(0, "key1", "member2", ts, 2*time.Second)
 
-	for i, c := range cases {
-		deleted, err := s.Delete(0, c.in.key, c.in.member, c.in.timestamp)
-		if !reflect.DeepEqual(deleted, c.want.deleted) {
-			t.Errorf("[case %d] updated: got(%+v) != want(%+v)", i, deleted, c.want.deleted)
-		}
-		if !reflect.DeepEqual(err, c.want.err) {
-			t.Errorf("[case %d] err: got(%+v) != want(%+v)", i, err, c.want.err)
-		}
+	for _, c := range cases {
+		t.Run("", func(t *testing.T) {
+			deleted, err := s.Delete(0, c.in.key, c.in.member, c.in.timestamp)
+			if !reflect.DeepEqual(deleted, c.want.deleted) {
+				t.Errorf("updated: got(%+v) != want(%+v)", deleted, c.want.deleted)
+			}
+			if !reflect.DeepEqual(err, c.want.err) {
+				t.Errorf("err: got(%+v) != want(%+v)", err, c.want.err)
+			}
+		})
 	}
 }
 
@@ -216,16 +220,21 @@ func TestServer_Select(t *testing.T) {
 		},
 	}
 
-	for i, c := range cases {
-		for _, e := range c.in.elements {
-			s.Insert(0, c.in.key, e.Member, e.Timestamp, e.TTL)
-		}
-		elements, err := s.Select(0, c.in.key, ts+int64(10*time.Nanosecond))
-		if !reflect.DeepEqual(elements, c.want.elements) {
-			t.Errorf("[case %d] elements: got(%+v) != want(%+v)", i, elements, c.want.elements)
-		}
-		if !reflect.DeepEqual(err, c.want.err) {
-			t.Errorf("[case %d] err: got(%+v) != want(%+v)", i, err, c.want.err)
-		}
+	for _, c := range cases {
+		c := c
+		t.Run("", func(t *testing.T) {
+			t.Parallel()
+
+			for _, e := range c.in.elements {
+				s.Insert(0, c.in.key, e.Member, e.Timestamp, e.TTL)
+			}
+			elements, err := s.Select(0, c.in.key, ts+int64(10*time.Nanosecond))
+			if !reflect.DeepEqual(elements, c.want.elements) {
+				t.Errorf("elements: got(%+v) != want(%+v)", elements, c.want.elements)
+			}
+			if !reflect.DeepEqual(err, c.want.err) {
+				t.Errorf("err: got(%+v) != want(%+v)", err, c.want.err)
+			}
+		})
 	}
 }
